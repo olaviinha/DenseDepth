@@ -8,9 +8,8 @@ from model import create_model
 from data import get_nyu_train_test_data, get_unreal_train_test_data
 from callbacks import get_nyu_callbacks
 
-from keras.optimizers import Adam
-from keras.utils import multi_gpu_model
-from keras.utils.vis_utils import plot_model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import plot_model  # multi_gpu_model
 
 # Argument Parser
 parser = argparse.ArgumentParser(description='High Quality Monocular Depth Estimation via Transfer Learning')
@@ -57,7 +56,7 @@ if True:
     with open(runPath+'/'+__file__, 'w') as training_script: training_script.write(training_script_content)
 
     # Generate model plot
-    plot_model(model, to_file=runPath+'/model_plot.svg', show_shapes=True, show_layer_names=True)
+    plot_model(model, to_file=runPath+'/model_plot.png', show_shapes=True, show_layer_names=True)
 
     # Save model summary to file
     from contextlib import redirect_stdout
@@ -65,8 +64,8 @@ if True:
         with redirect_stdout(f): model.summary()
 
 # Multi-gpu setup:
-basemodel = model
-if args.gpus > 1: model = multi_gpu_model(model, gpus=args.gpus)
+basemodel = model  # https://discuss.tensorflow.org/t/multi-gpu-model/11778
+# if args.gpus > 1: model = multi_gpu_model(model, gpus=args.gpus)
 
 # Optimizer
 optimizer = Adam(lr=args.lr, amsgrad=True)
